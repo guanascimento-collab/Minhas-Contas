@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Minhas Contas</title>
+<title>Minhas Contas - Online</title>
+<!-- Firebase SDKs (Versão Compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 :root{--bg:#f2f4f3;--ink:#16221e;--mut:#62706b;--card:#fff;--line:#dde3e0;--acc:#0f6b5c;--nu:#820ad1;--it:#ec7000;--sa:#cc0000;--pe:#2f5d8a;--fixa:#2e7d32;--wpp:#25D366}
 *{box-sizing:border-box}
@@ -44,11 +47,13 @@ th{color:var(--mut);font-weight:600;font-size:12px}
 .hide{display:none}
 .msg{color:var(--sa);font-size:13px;min-height:18px}
 .lock{max-width:340px;margin:60px auto}
+#syncStatus{font-size:12px;color:#fff;margin-left:auto;font-weight:600}
 </style>
 </head>
 <body>
 <header>
   <h1>Minhas Contas</h1>
+  <span id="syncStatus">Conectando à nuvem...</span>
   <nav>
     <button id="tL" class="on" onclick="go('L')">Lançar</button>
     <button id="tD" onclick="go('D')">Dashboard</button>
@@ -182,11 +187,27 @@ th{color:var(--mut);font-weight:600;font-size:12px}
 </main>
 
 <script>
-var KEY='minhas_contas_v10',PES=['Gustavo','Iris','Andreia','Matheus'];
+// ==========================================
+// CONFIGURAÇÃO DO FIREBASE (Nuvem em Tempo Real)
+// ==========================================
+var firebaseConfig = {
+  apiKey: "AIzaSyDyVrAoNp5MkUAC5z24seSIq3ksQKsx_ow",
+  authDomain: "contas-gustavo-app.firebaseapp.com",
+  databaseURL: "https://contas-gustavo-app-default-rtdb.firebaseio.com",
+  projectId: "contas-gustavo-app",
+  storageBucket: "contas-gustavo-app.firebasestorage.app",
+  messagingSenderId: "856901655083",
+  appId: "1:856901655083:web:6d12d3349615567c44a86e"
+};
+
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+var PES=['Gustavo','Iris','Andreia','Matheus'];
 var MES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 var CARD={Nubank:{c:'#820ad1',d:5,p:'salário'},'Itaú':{c:'#ec7000',d:5,p:'salário'},Santander:{c:'#cc0000',d:20,p:'vale'}};
-var S=load(),ok=false;
 
+// Estrutura padrão inicial com seus dados
 function getDadosPadrao(){
   return { 
     l: [
@@ -299,27 +320,42 @@ function getDadosPadrao(){
   };
 }
 
-function load(){
-  var vazio = getDadosPadrao();
-  try{
-    var s=JSON.parse(localStorage.getItem(KEY));
-    if(s && Array.isArray(s.l)) {
-      if(!s.pagos) s.pagos = {};
-      if(!s.rendimentos) s.rendimentos = {};
-      if(!s.dividas) s.dividas = [];
-      return s;
+var S = getDadosPadrao();
+var ok = false;
+
+// Sincronização em Tempo Real com o Firebase
+db.ref('sistema_contas').on('value', function(snapshot){
+  var dadosNuvem = snapshot.val();
+  if(dadosNuvem) {
+    S = dadosNuvem;
+    if(!S.l) S.l = [];
+    if(!S.pagos) S.pagos = {};
+    if(!S.rendimentos) S.rendimentos = {};
+    if(!S.dividas) S.dividas = [];
+    $('syncStatus').textContent = '⚡ Sincronizado com a nuvem';
+    listar();
+    listarDividas();
+    if(ok && !$('dash').classList.contains('hide')) {
+      carregarRendimentosMes();
+      dash();
     }
-  }catch(e){}
-  localStorage.setItem(KEY, JSON.stringify(vazio));
-  return vazio;
+  } else {
+    salvarNaNuvem();
+  }
+});
+
+function salvarNaNuvem(){
+  db.ref('sistema_contas').set(S, function(error){
+    if(error) {
+      $('syncStatus').textContent = '❌ Erro ao sincronizar';
+    } else {
+      $('syncStatus').textContent = '⚡ Sincronizado com a nuvem';
+    }
+  });
 }
 
 function save(){
-  try{
-    localStorage.setItem(KEY, JSON.stringify(S));
-  }catch(e){
-    alert('Erro ao salvar no navegador.');
-  }
+  salvarNaNuvem();
 }
 
 function $(i){return document.getElementById(i)}
@@ -518,7 +554,7 @@ function add(){
 
   save();
   $('fMsg').style.color = 'var(--acc)';
-  $('fMsg').textContent = 'Lançamento salvo com sucesso!';
+  $('fMsg').textContent = 'Lançamento salvo na nuvem com sucesso!';
   
   $('fD').value = '';
   $('fV').value = '';
@@ -557,7 +593,7 @@ function salvarEdicao(i){
       S.l[i].v = novoVal;
       save();
       dash();
-      alert('Alteração salva com sucesso!');
+      alert('Alteração salva na nuvem com sucesso!');
     } else {
       alert('Preencha uma descrição válida e valor maior que zero.');
     }
@@ -615,7 +651,7 @@ function addDivida(){
 
   save();
   $('fMsgDiv').style.color = 'var(--acc)';
-  $('fMsgDiv').textContent = 'Dívida cadastrada com sucesso!';
+  $('fMsgDiv').textContent = 'Dívida salva na nuvem!';
 
   $('fCredor').value = '';
   $('fDescDivida').value = '';
@@ -1006,7 +1042,7 @@ function limparTudo(){
 
 $('fM1').value = hoje().slice(0,7);
 $('lM').value = hoje().slice(0,7);
-tipo();listar();
+tipo();
 </script>
 </body>
 </html>
