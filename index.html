@@ -48,11 +48,23 @@ th{color:var(--mut);font-weight:600;font-size:12px}
 .tag{display:inline-block;padding:2px 10px;border-radius:99px;color:#fff;font-size:12px;font-weight:600}
 .hide{display:none}
 .msg{color:var(--sa);font-size:13px;margin-top:8px;text-align:center;font-weight:600}
-.lock{max-width:340px;margin:60px auto}
+.lock{max-width:380px;margin:80px auto}
 #syncStatus{font-size:12px;color:#fff;margin-left:auto;font-weight:600}
 </style>
 </head>
 <body>
+
+<!-- TELA DE BLOQUEIO GLOBAL INICIAL -->
+<div id="telaLock" class="card lock">
+  <h2 id="lockT" style="text-align:center; color:var(--acc)">🔒 Acesso Restrito</h2>
+  <label for="pwGlobal">Digite a senha do sistema</label>
+  <input id="pwGlobal" type="password" placeholder="Sua senha" onkeydown="if(event.key==='Enter')entrarGlobal()">
+  <p style="margin-top:14px"><button class="b" onclick="entrarGlobal()">Entrar no Sistema</button></p>
+  <div class="msg" id="pwGlobalMsg"></div>
+</div>
+
+<!-- APLICAÇÃO PRINCIPAL (Fica oculta até inserir a senha) -->
+<div id="appContainer" class="hide">
 <header>
   <h1>Minhas Contas</h1>
   <span id="syncStatus">Conectando à nuvem...</span>
@@ -60,6 +72,7 @@ th{color:var(--mut);font-weight:600;font-size:12px}
     <button id="tL" class="on" onclick="go('L')">Lançar</button>
     <button id="tD" onclick="go('D')">Dashboard</button>
     <button id="tV" onclick="go('V')">Dívidas</button>
+    <button class="g" onclick="sairGlobal()" style="padding:5px 10px;font-size:12px">Bloquear</button>
   </nav>
 </header>
 <main>
@@ -127,94 +140,83 @@ th{color:var(--mut);font-weight:600;font-size:12px}
 
 <!-- TELA DO DASHBOARD -->
 <section id="D" class="hide">
-  <div id="lock" class="card lock">
-    <h2 id="lockT">Digite a senha</h2>
-    <label for="pw">Senha</label>
-    <input id="pw" type="password" onkeydown="if(event.key==='Enter')entrar()">
-    <p><button class="b" onclick="entrar()">Entrar</button></p>
-    <div class="msg" id="pwMsg"></div>
+  <div class="card">
+    <div class="row">
+      <div><label for="dA">Ano</label><select id="dA" onchange="trocouMesAno()"></select></div>
+      <div><label for="dMs">Mês</label><select id="dMs" onchange="trocouMesAno()"></select></div>
+      <div><label for="inSal">Meu Salário (R$)</label><input id="inSal" type="number" step="0.01" placeholder="0,00" oninput="dash();salvarRendimentos()"></div>
+      <div><label for="inVale">Meu Vale (R$)</label><input id="inVale" type="number" step="0.01" placeholder="0,00" oninput="dash();salvarRendimentos()"></div>
+      <div><label>&nbsp;</label><button class="b g" onclick="trocaSenha()">Trocar senha</button></div>
+    </div>
+  </div>
+  <div class="grid" id="kpis"></div>
+  
+  <div class="card" style="margin-top:14px">
+    <h2>Controle de Pagamentos do Mês (Marque o que já paguei)</h2>
+    <div class="wrap"><table id="checklistPagos"></table></div>
   </div>
 
-  <div id="dash" class="hide">
-    <div class="card">
-      <div class="row">
-        <div><label for="dA">Ano</label><select id="dA" onchange="trocouMesAno()"></select></div>
-        <div><label for="dMs">Mês</label><select id="dMs" onchange="trocouMesAno()"></select></div>
-        <div><label for="inSal">Meu Salário (R$)</label><input id="inSal" type="number" step="0.01" placeholder="0,00" oninput="dash();salvarRendimentos()"></div>
-        <div><label for="inVale">Meu Vale (R$)</label><input id="inVale" type="number" step="0.01" placeholder="0,00" oninput="dash();salvarRendimentos()"></div>
-        <div><label>&nbsp;</label><button class="b g" onclick="sair()">Bloquear</button></div>
-        <div><label>&nbsp;</label><button class="b g" onclick="trocaSenha()">Trocar senha</button></div>
+  <div class="card" style="margin-top:14px"><h2>Total por mês no ano (toque para abrir)</h2><div class="bars" id="bars"></div></div>
+  <div class="card"><h2>Quem usa o cartão (Resumo e WhatsApp por Vencimento)</h2><div class="wrap"><table id="pessoas"></table></div></div>
+  
+  <!-- GASTOS DO MÊS COM FILTRO -->
+  <div class="card">
+    <h2>Todos os gastos deste mês (Edição e Exclusão)</h2>
+    <div class="row" style="margin-bottom:10px">
+      <div>
+        <label for="filtroGastosCartao">Filtrar por Cartão / Tipo</label>
+        <select id="filtroGastosCartao" onchange="dash()">
+          <option value="">Selecione um filtro...</option>
+          <option value="Nubank">Nubank</option>
+          <option value="Itaú">Itaú</option>
+          <option value="Santander">Santander</option>
+          <option value="fixa">Despesa Fixa</option>
+          <option value="pessoal">Variável / Pessoal</option>
+        </select>
+      </div>
+      <div>
+        <label for="filtroGastosPessoa">Filtrar por Pessoa</label>
+        <select id="filtroGastosPessoa" onchange="dash()">
+          <option value="">Selecione uma pessoa...</option>
+          <option value="Gustavo">Gustavo</option>
+          <option value="Iris">Iris</option>
+          <option value="Andreia">Andreia</option>
+          <option value="Matheus">Matheus</option>
+        </select>
       </div>
     </div>
-    <div class="grid" id="kpis"></div>
-    
-    <div class="card" style="margin-top:14px">
-      <h2>Controle de Pagamentos do Mês (Marque o que já paguei)</h2>
-      <div class="wrap"><table id="checklistPagos"></table></div>
-    </div>
+    <div class="wrap"><table id="gastosMes"></table></div>
+  </div>
 
-    <div class="card" style="margin-top:14px"><h2>Total por mês no ano (toque para abrir)</h2><div class="bars" id="bars"></div></div>
-    <div class="card"><h2>Quem usa o cartão (Resumo e WhatsApp por Vencimento)</h2><div class="wrap"><table id="pessoas"></table></div></div>
-    
-    <!-- GASTOS DO MÊS COM FILTRO -->
-    <div class="card">
-      <h2>Todos os gastos deste mês (Edição e Exclusão)</h2>
-      <div class="row" style="margin-bottom:10px">
-        <div>
-          <label for="filtroGastosCartao">Filtrar por Cartão / Tipo</label>
-          <select id="filtroGastosCartao" onchange="dash()">
-            <option value="">Selecione um filtro...</option>
-            <option value="Nubank">Nubank</option>
-            <option value="Itaú">Itaú</option>
-            <option value="Santander">Santander</option>
-            <option value="fixa">Despesa Fixa</option>
-            <option value="pessoal">Variável / Pessoal</option>
-          </select>
-        </div>
-        <div>
-          <label for="filtroGastosPessoa">Filtrar por Pessoa</label>
-          <select id="filtroGastosPessoa" onchange="dash()">
-            <option value="">Selecione uma pessoa...</option>
-            <option value="Gustavo">Gustavo</option>
-            <option value="Iris">Iris</option>
-            <option value="Andreia">Andreia</option>
-            <option value="Matheus">Matheus</option>
-          </select>
-        </div>
+  <!-- PARCELAS ATIVAS COM FILTRO -->
+  <div class="card">
+    <h2>Parcelas ativas neste mês</h2>
+    <div class="row" style="margin-bottom:10px">
+      <div>
+        <label for="filtroParcCartao">Filtrar por Cartão</label>
+        <select id="filtroParcCartao" onchange="dash()">
+          <option value="">Selecione um cartão...</option>
+          <option value="Nubank">Nubank</option>
+          <option value="Itaú">Itaú</option>
+          <option value="Santander">Santander</option>
+        </select>
       </div>
-      <div class="wrap"><table id="gastosMes"></table></div>
-    </div>
-
-    <!-- PARCELAS ATIVAS COM FILTRO -->
-    <div class="card">
-      <h2>Parcelas ativas neste mês</h2>
-      <div class="row" style="margin-bottom:10px">
-        <div>
-          <label for="filtroParcCartao">Filtrar por Cartão</label>
-          <select id="filtroParcCartao" onchange="dash()">
-            <option value="">Selecione um cartão...</option>
-            <option value="Nubank">Nubank</option>
-            <option value="Itaú">Itaú</option>
-            <option value="Santander">Santander</option>
-          </select>
-        </div>
-        <div>
-          <label for="filtroParcPessoa">Filtrar por Pessoa</label>
-          <select id="filtroParcPessoa" onchange="dash()">
-            <option value="">Selecione uma pessoa...</option>
-            <option value="Gustavo">Gustavo</option>
-            <option value="Iris">Iris</option>
-            <option value="Andreia">Andreia</option>
-            <option value="Matheus">Matheus</option>
-          </select>
-        </div>
+      <div>
+        <label for="filtroParcPessoa">Filtrar por Pessoa</label>
+        <select id="filtroParcPessoa" onchange="dash()">
+          <option value="">Selecione uma pessoa...</option>
+          <option value="Gustavo">Gustavo</option>
+          <option value="Iris">Iris</option>
+          <option value="Andreia">Andreia</option>
+          <option value="Matheus">Matheus</option>
+        </select>
       </div>
-      <div class="wrap"><table id="parc"></table></div>
     </div>
+    <div class="wrap"><table id="parc"></table></div>
   </div>
 </section>
 
-<!-- TELA DE DÍVIDAS / O QUE EU DEVO -->
+<!-- TELA DE DÍVIDAS / O QUE EU DEVO (COM ABATIMENTO PARCIAL) -->
 <section id="V" class="hide">
   <div class="card">
     <h2>Cadastrar Dívida (O que eu devo para alguém)</h2>
@@ -234,8 +236,8 @@ th{color:var(--mut);font-weight:600;font-size:12px}
         <input id="fDescDivida" placeholder="Ex.: Empréstimo Pix / Material da obra / Aluguel">
       </div>
       <div>
-        <label for="fValorDivida">Valor Devido (R$)</label>
-        <input id="fValorDivida" type="text" placeholder="Ex.: 250,00">
+        <label for="fValorDivida">Valor Total Devido (R$)</label>
+        <input id="fValorDivida" type="text" placeholder="Ex.: 15000,00">
       </div>
     </div>
     <p style="margin:12px 0 0"><button class="b" onclick="addDivida()">Salvar Dívida</button></p>
@@ -248,12 +250,13 @@ th{color:var(--mut);font-weight:600;font-size:12px}
   </div>
 
   <div class="card">
-    <h2>Todas as minhas Dívidas Cadastradas</h2>
+    <h2>Todas as minhas Dívidas Cadastradas (Com Abatimento)</h2>
     <div class="wrap"><table id="tabelaDividas"></table></div>
   </div>
 </section>
 
 </main>
+</div>
 
 <script>
 // CONFIGURAÇÃO DO FIREBASE
@@ -279,7 +282,6 @@ function getDadosPadrao(){
 }
 
 var S = getDadosPadrao();
-var ok = false;
 
 db.ref('sistema_contas').on('value', function(snapshot){
   var dadosNuvem = snapshot.val();
@@ -290,10 +292,17 @@ db.ref('sistema_contas').on('value', function(snapshot){
     if(!S.rendimentos) S.rendimentos = {};
     if(!S.dividas) S.dividas = [];
     $('syncStatus').textContent = '⚡ Sincronizado com a nuvem';
-    listarDividas();
-    if(ok && !$('dash').classList.contains('hide')) {
-      carregarRendimentosMes();
-      dash();
+    
+    if(!S.h) {
+      $('lockT').textContent = '🔒 Crie sua senha inicial';
+    }
+
+    if(!document.getElementById('appContainer').classList.contains('hide')) {
+      listarDividas();
+      if(!$('D').classList.contains('hide')) {
+        carregarRendimentosMes();
+        dash();
+      }
     }
   } else {
     salvarNaNuvem();
@@ -315,6 +324,47 @@ function $(i){return document.getElementById(i)}
 function R(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function idx(ym){var p=ym.split('-');return +p[0]*12+(+p[1]-1)}
+
+// ==========================================
+// CONTROLE DE ACESSO GLOBAL
+// ==========================================
+function entrarGlobal(){
+  var v = $('pwGlobal').value;
+  if(!v){ $('pwGlobalMsg').textContent = 'Digite a senha.'; return; }
+  
+  if(!S.h){
+    if(v.length < 4){ $('pwGlobalMsg').textContent = 'Use pelo menos 4 caracteres.'; return; }
+    S.h = v; save();
+    liberarApp();
+  } else if(S.h === v){
+    liberarApp();
+  } else {
+    $('pwGlobalMsg').textContent = 'Senha incorreta.';
+  }
+}
+
+function liberarApp(){
+  $('telaLock').classList.add('hide');
+  $('appContainer').classList.remove('hide');
+  $('pwGlobal').value = '';
+  $('pwGlobalMsg').textContent = '';
+  go('L');
+}
+
+function sairGlobal(){
+  $('appContainer').classList.add('hide');
+  $('telaLock').classList.remove('hide');
+  $('lockT').textContent = S.h ? '🔒 Acesso Restrito' : '🔒 Crie sua senha inicial';
+  $('pwGlobal').value = '';
+  $('pwGlobalMsg').textContent = '';
+  $('pwGlobal').focus();
+}
+
+function trocaSenha(){
+  var n = prompt('Nova senha (mínimo 4 caracteres):');
+  if(n && n.length >= 4){ S.h = n; save(); alert('Senha alterada com sucesso.'); } 
+  else if(n) { alert('A senha deve ter pelo menos 4 caracteres.'); }
+}
 
 function getChaveMesAtual(){
   var y = $('dA').value || new Date().getFullYear();
@@ -374,40 +424,21 @@ function go(t){
   $('tV').classList.toggle('on',t==='V');
 
   if(t==='D'){
-    if(ok) { initDash(); } 
-    else {
-      $('lockT').textContent = S.h ? 'Digite a senha' : 'Crie uma senha para o dashboard';
-      $('pw').value = '';
-      $('pwMsg').textContent = '';
-      $('pw').focus();
-    }
-  } else if(t==='V'){ listarDividas(); }
+    initDashSelectors();
+    carregarRendimentosMes();
+    dash();
+  } else if(t==='V'){ 
+    listarDividas(); 
+  }
 }
 
-function entrar(){
-  var v=$('pw').value;
-  if(!v){ $('pwMsg').textContent='Digite a senha.'; return; }
-  if(!S.h){
-    if(v.length < 4){ $('pwMsg').textContent='Use pelo menos 4 caracteres.'; return; }
-    S.h = v; save(); ok = true;
-  } else if(S.h === v){ ok = true; } 
-  else { $('pwMsg').textContent='Senha incorreta.'; return; }
-  $('pw').value=''; $('pwMsg').textContent='';
-  initDash();
-}
-
-function sair(){
-  ok = false;
-  $('dash').classList.add('hide');
-  $('lock').classList.remove('hide');
-  $('lockT').textContent = 'Digite a senha';
-  $('pw').value = ''; $('pwMsg').textContent = '';
-}
-
-function trocaSenha(){
-  var n=prompt('Nova senha (mínimo 4 caracteres):');
-  if(n && n.length >= 4){ S.h = n; save(); alert('Senha alterada com sucesso.'); } 
-  else if(n) { alert('A senha deve ter pelo menos 4 caracteres.'); }
+function initDashSelectors(){
+  if(!$('dA').options.length){
+    var y0=new Date().getFullYear(),a='';
+    for(var y=y0-1;y<=y0+3;y++)a+='<option'+(y===y0?' selected':'')+'>'+y+'</option>';
+    $('dA').innerHTML=a;
+    $('dMs').innerHTML=MES.map(function(n,i){return'<option value="'+i+'"'+(i===new Date().getMonth()?' selected':'')+'>'+n+'</option>'}).join('');
+  }
 }
 
 function tipo(){
@@ -492,7 +523,7 @@ function del(i){
   if(confirm('Tem certeza que deseja apagar "' + item.d + '"?')){
     S.l.splice(i, 1);
     save();
-    if(ok) dash();
+    if(!$('D').classList.contains('hide')) dash();
   }
 }
 
@@ -525,6 +556,9 @@ function tag(e){
   return '<span class="tag" style="background:var(--pe)">Variável / Pessoal</span>';
 }
 
+// ==========================================
+// LOGICA DE DÍVIDAS COM ABATIMENTO PARCIAL
+// ==========================================
 function addDivida(){
   var credor = $('fCredor').value.trim();
   var desc = $('fDescDivida').value.trim();
@@ -533,18 +567,49 @@ function addDivida(){
 
   if(!credor || !desc || isNaN(val) || val <= 0){
     $('fMsgDiv').style.color = 'var(--sa)';
-    $('fMsgDiv').textContent = 'Preencha o credor, a descrição e um valor maior que zero.';
+    $('fMsgDiv').textContent = 'Preencha o credor, a descrição e um valor total válido.';
     return;
   }
 
   if(!S.dividas) S.dividas = [];
-  S.dividas.push({ id: 'div_' + Date.now(), credor: credor, d: desc, v: val, data: hoje() });
+  S.dividas.push({ 
+    id: 'div_' + Date.now(), 
+    credor: credor, 
+    d: desc, 
+    v: val,       // Valor Total
+    pago: 0,      // Quanto já foi pago
+    data: hoje() 
+  });
   save();
   $('fMsgDiv').style.color = 'var(--acc)';
   $('fMsgDiv').textContent = 'Dívida salva na nuvem!';
   $('fCredor').value = ''; $('fDescDivida').value = ''; $('fValorDivida').value = '';
   listarDividas();
   setTimeout(function(){ $('fMsgDiv').textContent = ''; }, 3000);
+}
+
+function abaterDivida(idxDiv){
+  var item = S.dividas[idxDiv];
+  var saldoRestante = item.v - (item.pago || 0);
+  var valorPagoStr = prompt('Quanto você deseja pagar/abater desta dívida?\n(Saldo devedor atual: ' + R(saldoRestante) + ')', saldoRestante.toFixed(2).replace('.', ','));
+  
+  if(valorPagoStr !== null) {
+    var valPago = parseFloat(valorPagoStr.replace(',', '.'));
+    if(!isNaN(valPago) && valPago > 0) {
+      item.pago = (item.pago || 0) + valPago;
+      
+      if(item.pago >= item.v) {
+        if(confirm('O valor pago quitou ou ultrapassou o total da dívida. Deseja arquivar/remover este registro?')) {
+          S.dividas.splice(idxDiv, 1);
+        }
+      }
+      save();
+      listarDividas();
+      alert('Abatimento registado com sucesso!');
+    } else {
+      alert('Valor inválido.');
+    }
+  }
 }
 
 function delDivida(idxDiv){
@@ -557,21 +622,28 @@ function delDivida(idxDiv){
 function enviarWhatsAppDividas(credorTarget){
   var dividasCredor = S.dividas.filter(function(item){ return item.credor === credorTarget; });
   if(dividasCredor.length === 0) return;
-  var total = 0;
+  var totalRestante = 0;
   var msg = '*Resumo de Dívida / O que eu te devo*\n*Para:* ' + credorTarget + '\n-------------------------------------\n';
-  dividasCredor.forEach(function(item){ total += item.v; msg += '  • ' + item.d + ': ' + R(item.v) + '\n'; });
-  msg += '-------------------------------------\n*💰 TOTAL QUE TE DEVO: ' + R(total) + '*';
+  dividasCredor.forEach(function(item){ 
+    var saldo = item.v - (item.pago || 0);
+    totalRestante += saldo;
+    msg += '  • ' + item.d + ': Resta ' + R(saldo) + ' (Total: ' + R(item.v) + ')\n'; 
+  });
+  msg += '-------------------------------------\n*💰 TOTAL RESTANTE QUE TE DEVO: ' + R(totalRestante) + '*';
   window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 }
 
 function listarDividas(){
   if(!S.dividas) S.dividas = [];
   var totais = {}, totalGeralDevido = 0;
+  
   S.dividas.forEach(function(item){
-    totais[item.credor] = (totais[item.credor] || 0) + item.v;
-    totalGeralDevido += item.v;
+    var saldo = item.v - (item.pago || 0);
+    totais[item.credor] = (totais[item.credor] || 0) + saldo;
+    totalGeralDevido += saldo;
   });
-  var thTot = '<tr><th>Pessoa / Credor</th><th>Total que devo</th><th style="text-align:center">Ação</th></tr>';
+
+  var thTot = '<tr><th>Pessoa / Credor</th><th>Total Restante Devido</th><th style="text-align:center">Ação</th></tr>';
   var credores = Object.keys(totais);
   if(credores.length === 0){
     thTot += '<tr><td colspan="3" style="text-align:center;color:var(--mut)">Nenhuma dívida cadastrada. Você está livre de dívidas!</td></tr>';
@@ -579,32 +651,31 @@ function listarDividas(){
     credores.forEach(function(nomeCredor){
       thTot += '<tr><td><b>' + esc(nomeCredor) + '</b></td><td><b>' + R(totais[nomeCredor]) + '</b></td><td style="text-align:center"><button class="wpp" onclick="enviarWhatsAppDividas(\''+esc(nomeCredor)+'\')">Enviar por WhatsApp</button></td></tr>';
     });
-    thTot += '<tr><th>TOTAL GERAL DEVIDO</th><th>' + R(totalGeralDevido) + '</th><th></th></tr>';
+    thTot += '<tr><th>TOTAL GERAL RESTANTE</th><th>' + R(totalGeralDevido) + '</th><th></th></tr>';
   }
   $('tabelaTotaisDividas').innerHTML = thTot;
 
-  var h = '<tr><th>Ação</th><th>Credor</th><th>Descrição</th><th>Valor Devido</th></tr>';
+  var h = '<tr><th>Ações</th><th>Credor</th><th>Descrição</th><th>Valor Total</th><th>Já Pago</th><th>Resta Pagar</th></tr>';
   if(S.dividas.length === 0){
-    h += '<tr><td colspan="4" style="text-align:center;color:var(--mut)">Nenhum registro.</td></tr>';
+    h += '<tr><td colspan="6" style="text-align:center;color:var(--mut)">Nenhum registro.</td></tr>';
   } else {
     S.dividas.forEach(function(item, i){
-      h += '<tr><td><button class="x" onclick="delDivida('+i+')">Quitar / Apagar</button></td><td><b>' + esc(item.credor) + '</b></td><td>' + esc(item.d) + '</td><td>' + R(item.v) + '</td></tr>';
+      var pago = item.pago || 0;
+      var saldo = item.v - pago;
+      h += '<tr>' +
+           '<td style="white-space:nowrap">' +
+             '<button class="b" style="padding:4px 8px;font-size:11px;margin-right:4px;width:auto;" onclick="abaterDivida('+i+')">Abater</button>' +
+             '<button class="x" onclick="delDivida('+i+')">Quitar</button>' +
+           '</td>' +
+           '<td><b>' + esc(item.credor) + '</b></td>' +
+           '<td>' + esc(item.d) + '</td>' +
+           '<td>' + R(item.v) + '</td>' +
+           '<td style="color:var(--acc)">' + R(pago) + '</td>' +
+           '<td><b>' + R(saldo) + '</b></td>' +
+           '</tr>';
     });
   }
   $('tabelaDividas').innerHTML = h;
-}
-
-function initDash(){
-  $('lock').classList.add('hide');
-  $('dash').classList.remove('hide');
-  if(!$('dA').options.length){
-    var y0=new Date().getFullYear(),a='';
-    for(var y=y0-1;y<=y0+3;y++)a+='<option'+(y===y0?' selected':'')+'>'+y+'</option>';
-    $('dA').innerHTML=a;
-    $('dMs').innerHTML=MES.map(function(n,i){return'<option value="'+i+'"'+(i===new Date().getMonth()?' selected':'')+'>'+n+'</option>'}).join('');
-  }
-  carregarRendimentosMes();
-  dash();
 }
 
 function enviarWhatsAppPessoa(pessoa){
@@ -639,6 +710,7 @@ function enviarWhatsAppPessoa(pessoa){
 }
 
 function dash(){
+  initDashSelectors();
   var y=+$('dA').value, m=+$('dMs').value, i=y*12+m;
   var chaveMes = y + '-' + ('0' + (m + 1)).slice(-2);
   
