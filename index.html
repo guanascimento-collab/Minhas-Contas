@@ -63,7 +63,7 @@ th{color:var(--mut);font-weight:600;font-size:12px}
   <div class="msg" id="pwGlobalMsg"></div>
 </div>
 
-<!-- APLICAÇÃO PRINCIPAL (Fica oculta até inserir a senha) -->
+<!-- APLICAÇÃO PRINCIPAL -->
 <div id="appContainer" class="hide">
 <header>
   <h1>Minhas Contas</h1>
@@ -77,7 +77,7 @@ th{color:var(--mut);font-weight:600;font-size:12px}
 </header>
 <main>
 
-<!-- TELA DE LANÇAMENTO (Focada e Interativa) -->
+<!-- TELA DE LANÇAMENTO -->
 <section id="L">
   <div class="card" style="max-width:700px; margin:20px auto;">
     <h2>✨ Novo Lançamento</h2>
@@ -100,6 +100,13 @@ th{color:var(--mut);font-weight:600;font-size:12px}
       <div id="wP">
         <label for="fP">Quem gastou / Responsável</label>
         <select id="fP"><option>Gustavo</option><option>Iris</option><option>Andreia</option><option>Matheus</option></select>
+      </div>
+      <div id="wOrigem" class="hide">
+        <label for="fOrigem">Sai de onde?</label>
+        <select id="fOrigem">
+          <option value="salario">Salário (Dia 05)</option>
+          <option value="vale">Vale (Dia 20)</option>
+        </select>
       </div>
       <div>
         <label for="fM1">Mês do Lançamento</label>
@@ -159,7 +166,6 @@ th{color:var(--mut);font-weight:600;font-size:12px}
   <div class="card" style="margin-top:14px"><h2>Total por mês no ano (toque para abrir)</h2><div class="bars" id="bars"></div></div>
   <div class="card"><h2>Quem usa o cartão (Resumo e WhatsApp por Vencimento)</h2><div class="wrap"><table id="pessoas"></table></div></div>
   
-  <!-- GASTOS DO MÊS COM FILTRO -->
   <div class="card">
     <h2>Todos os gastos deste mês (Edição e Exclusão)</h2>
     <div class="row" style="margin-bottom:10px">
@@ -188,7 +194,6 @@ th{color:var(--mut);font-weight:600;font-size:12px}
     <div class="wrap"><table id="gastosMes"></table></div>
   </div>
 
-  <!-- PARCELAS ATIVAS COM FILTRO -->
   <div class="card">
     <h2>Parcelas ativas neste mês</h2>
     <div class="row" style="margin-bottom:10px">
@@ -216,7 +221,7 @@ th{color:var(--mut);font-weight:600;font-size:12px}
   </div>
 </section>
 
-<!-- TELA DE DÍVIDAS / O QUE EU DEVO (COM ABATIMENTO PARCIAL) -->
+<!-- TELA DE DÍVIDAS -->
 <section id="V" class="hide">
   <div class="card">
     <h2>Cadastrar Dívida (O que eu devo para alguém)</h2>
@@ -259,7 +264,6 @@ th{color:var(--mut);font-weight:600;font-size:12px}
 </div>
 
 <script>
-// CONFIGURAÇÃO DO FIREBASE
 var firebaseConfig = {
   apiKey: "AIzaSyDyVrAoNp5MkUAC5z24seSIq3ksQKsx_ow",
   authDomain: "contas-gustavo-app.firebaseapp.com",
@@ -325,9 +329,6 @@ function R(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function idx(ym){var p=ym.split('-');return +p[0]*12+(+p[1]-1)}
 
-// ==========================================
-// CONTROLE DE ACESSO GLOBAL
-// ==========================================
 function entrarGlobal(){
   var v = $('pwGlobal').value;
   if(!v){ $('pwGlobalMsg').textContent = 'Digite a senha.'; return; }
@@ -444,6 +445,7 @@ function initDashSelectors(){
 function tipo(){
   var t = $('fT').value;
   $('wC').classList.toggle('hide', t !== 'cartao');
+  $('wOrigem').classList.toggle('hide', t === 'cartao');
   
   if(t === 'cartao') {
     $('lblV').textContent = 'Valor da Parcela (R$)';
@@ -479,7 +481,8 @@ function add(){
   }
   
   var n = 1, atual = 1, m = mInformado;
-  var responsavel = (t === 'cartao') ? $('fP').value : 'Gustavo';
+  var responsavel = $('fP').value;
+  var origem = (t !== 'cartao') ? $('fOrigem').value : 'salario';
 
   if($('fPar').value === 's'){
     n = parseInt($('fN').value) || 0;
@@ -502,6 +505,7 @@ function add(){
     t: t,
     c: t === 'cartao' ? $('fC').value : '',
     p: responsavel,
+    origem: origem,
     d: d,
     v: v,
     n: n,
@@ -556,9 +560,6 @@ function tag(e){
   return '<span class="tag" style="background:var(--pe)">Variável / Pessoal</span>';
 }
 
-// ==========================================
-// LOGICA DE DÍVIDAS COM ABATIMENTO PARCIAL
-// ==========================================
 function addDivida(){
   var credor = $('fCredor').value.trim();
   var desc = $('fDescDivida').value.trim();
@@ -576,8 +577,8 @@ function addDivida(){
     id: 'div_' + Date.now(), 
     credor: credor, 
     d: desc, 
-    v: val,       // Valor Total
-    pago: 0,      // Quanto já foi pago
+    v: val, 
+    pago: 0, 
     data: hoje() 
   });
   save();
@@ -687,14 +688,17 @@ function enviarWhatsAppPessoa(pessoa){
   S.l.forEach(function(e){
     var a = amt(e, i);
     if(!a) return;
-    var resp = (e.t === 'cartao') ? e.p : 'Gustavo';
+    var resp = e.p;
     if(resp === pessoa) {
       var k = i - idx(e.m) + 1;
       var detalheParc = (e.n > 1) ? ' (' + k + '/' + e.n + ')' : '';
       if(e.t === 'cartao') {
         if(e.c === 'Santander') { tot20 += a; itens20.push('  • ' + e.d + detalheParc + ': ' + R(a)); } 
         else { tot05 += a; itens05.push('  • ' + e.d + detalheParc + ' [' + e.c + ']: ' + R(a)); }
-      } else { totOutros += a; itensOutros.push('  • ' + e.d + ': ' + R(a)); }
+      } else {
+        if(e.origem === 'vale') { tot20 += a; itens20.push('  • ' + e.d + detalheParc + ' [Vale]: ' + R(a)); }
+        else { tot05 += a; itens05.push('  • ' + e.d + detalheParc + ' [Salário]: ' + R(a)); }
+      }
     }
   });
 
@@ -702,9 +706,8 @@ function enviarWhatsAppPessoa(pessoa){
   if(totalGeral === 0){ alert('Nenhum gasto encontrado para ' + pessoa + ' no mês de ' + nomeMes + '.'); return; }
 
   var msg = '*Resumo de Gastos - ' + pessoa + '*\n*Mês:* ' + nomeMes + '\n-------------------------------------\n';
-  if(itens05.length > 0) { msg += '\n*📅 VENCIMENTO DIA 05 (Nubank e Itaú)*\n' + itens05.join('\n') + '\n*Subtotal Dia 05: ' + R(tot05) + '*\n'; }
-  if(itens20.length > 0) { msg += '\n*📅 VENCIMENTO DIA 20 (Santander)*\n' + itens20.join('\n') + '\n*Subtotal Dia 20: ' + R(tot20) + '*\n'; }
-  if(itensOutros.length > 0) { msg += '\n*📌 OUTRAS DESPESAS (Dia 05)*\n' + itensOutros.join('\n') + '\n*Subtotal Outros: ' + R(totOutros) + '*\n'; }
+  if(itens05.length > 0) { msg += '\n*📅 VENCIMENTO DIA 05 (Salário / Cartões)*\n' + itens05.join('\n') + '\n*Subtotal Dia 05: ' + R(tot05) + '*\n'; }
+  if(itens20.length > 0) { msg += '\n*📅 VENCIMENTO DIA 20 (Vale / Santander)*\n' + itens20.join('\n') + '\n*Subtotal Dia 20: ' + R(tot20) + '*\n'; }
   msg += '\n-------------------------------------\n*💰 TOTAL GERAL DO MÊS: ' + R(totalGeral) + '*';
   window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 }
@@ -726,7 +729,9 @@ function dash(){
       else if(e.p === 'Gustavo') { salGasto += a; }
     } else if(e.t === 'fixa' || e.t === 'pessoal') {
       if(e.t === 'fixa') tot.fixa += a; else tot.pessoal += a;
-      salGasto += a;
+      if(e.p === 'Gustavo') {
+        if(e.origem === 'vale') valeGasto += a; else salGasto += a;
+      }
     }
     gastosDoMes.push({e: e, val: a, idx: idxOrig});
   });
@@ -781,7 +786,7 @@ function dash(){
       qtdItens++;
       var keyChk = 'gasto_' + item.idx;
       var checked = mesPagos[keyChk] ? 'checked' : '';
-      chkHtml += '<tr><td><input type="checkbox" '+checked+' onclick="togglePago(\''+chaveMes+'\', \''+keyChk+'\')" style="width:20px;height:20px;cursor:pointer"></td><td>' + esc(item.e.d) + '</td><td>' + tag(item.e) + '</td><td style="text-align:right">' + R(item.val) + '</td></tr>';
+      chkHtml += '<tr><td><input type="checkbox" '+checked+' onclick="togglePago(\''+chaveMes+'\', \''+keyChk+'\')" style="width:20px;height:20px;cursor:pointer"></td><td>' + esc(item.e.d) + ' (' + item.e.p + ')</td><td>' + tag(item.e) + '</td><td style="text-align:right">' + R(item.val) + '</td></tr>';
     }
   });
   if(!qtdItens) chkHtml += '<tr><td colspan="4" style="text-align:center;color:var(--mut)">Nenhum cartão ou despesa cadastrada neste mês.</td></tr>';
@@ -794,7 +799,7 @@ function dash(){
 
   var P={};PES.forEach(function(p){P[p]={Nubank:0, Itaú:0, Santander:0, Fixas:0, totMes:0, par:0, rest:0, ano:0}});
   S.l.forEach(function(e){
-    var resp = (e.t==='cartao') ? e.p : 'Gustavo';
+    var resp = e.p;
     if(!P[resp]) return;
     var a=amt(e,i);
     P[resp].totMes += a;
@@ -830,7 +835,7 @@ function dash(){
     var gc=0;
     gastosDoMes.forEach(function(item){
       var e = item.e;
-      var respGasto = (e.t === 'cartao') ? e.p : 'Gustavo';
+      var respGasto = e.p;
       var cartaoOuTipo = (e.t === 'cartao') ? e.c : e.t;
 
       if(fCartao && cartaoOuTipo !== fCartao) return;
@@ -863,7 +868,7 @@ function dash(){
     var c=0;
     S.l.forEach(function(e, idxOrig){
       if(e.n < 2 || !amt(e,i)) return;
-      var respParc = (e.t === 'cartao') ? e.p : 'Gustavo';
+      var respParc = e.p;
 
       if(fParcCartao && e.c !== fParcCartao) return;
       if(fParcPessoa && respParc !== fParcPessoa) return;
