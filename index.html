@@ -3,39 +3,40 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Minhas Contas</title>
+<title>Minhas Contas - Pro</title>
 <!-- Firebase SDKs (Versão Compat) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-:root{--bg:#f2f4f3;--ink:#16221e;--mut:#62706b;--card:#fff;--line:#dde3e0;--acc:#0f6b5c;--nu:#820ad1;--it:#ec7000;--sa:#cc0000;--pe:#2f5d8a;--fixa:#2e7d32;--wpp:#25D366}
-*{box-sizing:border-box}
+:root{--bg:#f2f4f3;--ink:#16221e;--mut:#62706b;--card:#fff;--line:#dde3e0;--acc:#0f6b5c;--nu:#820ad1;--it:#ec7000;--sa:#cc0000;--pe:#2f5d8a;--fixa:#2e7d32;--wpp:#25D366;--header-bg:#16221e}
+[data-theme="dark"]{--bg:#101715;--ink:#e1e8ed;--mut:#9aa5b1;--card:#18221f;--line:#263531;--acc:#148f77;--nu:#9b33e6;--it:#f5821e;--sa:#ff3355;--pe:#3a7bc8;--fixa:#34a853;--header-bg:#0b100e}
+*{box-sizing:border-box;transition:background-color 0.2s, border-color 0.2s}
 body{margin:0;font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
-header{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--ink);color:#fff;flex-wrap:wrap}
+header{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--header-bg);color:#fff;flex-wrap:wrap;box-shadow:0 2px 6px rgba(0,0,0,0.2);border-bottom:1px solid var(--line)}
 header h1{font-size:18px;margin:0}
-nav button{background:none;border:1px solid #fff5;color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:14px;margin-left:6px}
-nav button.on{background:#fff;color:var(--ink)}
-main{max-width:1000px;margin:0 auto;padding:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.03)}
+nav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+nav button{background:none;border:1px solid #fff5;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600}
+nav button.on{background:#fff;color:#16221e}
+main{max-width:1050px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.03);animation:fadeIn 0.3s ease-in-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 h2{font-size:17px;margin:0 0 14px;color:var(--acc)}
 label{display:block;font-size:13px;font-weight:600;color:var(--mut);margin-bottom:5px}
-input,select{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;width:100%;background:#fafafa;color:var(--ink);transition:border 0.2s}
-input:focus,select:focus{background:#fff;border-color:var(--acc)}
+input,select{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;width:100%;background:var(--card);color:var(--ink)}
+input:focus,select:focus{border-color:var(--acc);outline:none;box-shadow:0 0 0 3px rgba(15,107,92,0.15)}
 button.b{font:inherit;padding:12px;background:var(--acc);color:#fff;border:0;cursor:pointer;font-weight:600;border-radius:8px;width:100%;transition:opacity 0.2s}
 button.b:hover{opacity:0.9}
-button.g{background:#fff;color:var(--ink);border:1px solid var(--line);width:auto}
-button.x{background:#fff;border:1px solid var(--sa);color:var(--sa);cursor:pointer;font-size:13px;font-weight:600;padding:5px 10px;border-radius:8px;white-space:nowrap}
+button.g{background:var(--card);color:var(--ink);border:1px solid var(--line);width:auto}
+button.x{background:var(--card);border:1px solid var(--sa);color:var(--sa);cursor:pointer;font-size:12px;font-weight:600;padding:5px 10px;border-radius:8px;white-space:nowrap}
 button.x:hover{background:var(--sa);color:#fff}
 button.wpp{background:var(--wpp);border:0;color:#fff;cursor:pointer;font-size:12px;font-weight:600;padding:5px 10px;border-radius:8px;white-space:nowrap}
 button.wpp:hover{opacity:0.9}
-button.danger{background:var(--sa);color:#fff;border:0;cursor:pointer;font-weight:600;width:auto}
-:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-.kpi{border-left:5px solid var(--c);background:var(--card);border-radius:8px;padding:10px 12px;border:1px solid var(--line)}
-.kpi small{color:var(--mut);display:block}
-.kpi b{font-size:19px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.kpi{border-left:5px solid var(--c);background:var(--card);border-radius:8px;padding:12px;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kpi small{color:var(--mut);display:block;font-size:11px;text-transform:uppercase;font-weight:700}
+.kpi b{font-size:20px;display:block;margin-top:2px}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{padding:8px 8px;text-align:right;border-bottom:1px solid var(--line)}
+th,td{padding:9px 8px;text-align:right;border-bottom:1px solid var(--line)}
 th:first-child,td:first-child{text-align:left}
 th{color:var(--mut);font-weight:600;font-size:12px}
 .wrap{overflow-x:auto}
@@ -50,15 +51,27 @@ th{color:var(--mut);font-weight:600;font-size:12px}
 .msg{color:var(--sa);font-size:13px;margin-top:8px;text-align:center;font-weight:600}
 .lock{max-width:380px;margin:80px auto}
 #syncStatus{font-size:12px;color:#fff;margin-left:auto;font-weight:600}
+
+/* Pílulas de Filtro Rápidas */
+.filter-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pill{background:var(--card);border:1px solid var(--line);color:var(--ink);padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer}
+.pill.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+
+/* Barra de Progresso Customizada */
+.prog-container{background:var(--line);border-radius:99px;height:8px;width:100%;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;background:var(--acc);border-radius:99px}
 </style>
 </head>
-<body>
+<body data-theme="light">
 
 <!-- TELA DE BLOQUEIO GLOBAL INICIAL -->
 <div id="telaLock" class="card lock">
   <h2 id="lockT" style="text-align:center; color:var(--acc)">🔒 Acesso Restrito</h2>
   <label for="pwGlobal">Digite a senha do sistema</label>
-  <input id="pwGlobal" type="password" placeholder="Sua senha" onkeydown="if(event.key==='Enter')entrarGlobal()">
+  <div style="position:relative">
+    <input id="pwGlobal" type="password" placeholder="Sua senha" style="padding-right:40px;" onkeydown="if(event.key==='Enter')entrarGlobal()">
+    <span onclick="toggleMostrarSenha()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:16px;" title="Mostrar/Ocultar Senha">👁️</span>
+  </div>
   <p style="margin-top:14px"><button class="b" onclick="entrarGlobal()">Entrar no Sistema</button></p>
   <div class="msg" id="pwGlobalMsg"></div>
 </div>
@@ -67,12 +80,14 @@ th{color:var(--mut);font-weight:600;font-size:12px}
 <div id="appContainer" class="hide">
 <header>
   <h1>Minhas Contas</h1>
-  <span id="syncStatus">Conectando à nuvem...</span>
+  <span id="syncStatus">Conectando...</span>
   <nav>
     <button id="tL" class="on" onclick="go('L')">Lançar</button>
     <button id="tD" onclick="go('D')">Dashboard</button>
+    <button id="tPro" onclick="go('Pro')">📊 Visão Pro</button>
     <button id="tV" onclick="go('V')">Dívidas</button>
-    <button class="g" onclick="sairGlobal()" style="padding:5px 10px;font-size:12px">Bloquear</button>
+    <button class="g" onclick="toggleTheme()" title="Alternar Tema Claro/Escuro" style="padding:5px 10px">☀️/🌙</button>
+    <button class="g" onclick="sairGlobal()" style="padding:5px 10px">Bloquear</button>
   </nav>
 </header>
 <main>
@@ -166,58 +181,43 @@ th{color:var(--mut);font-weight:600;font-size:12px}
   <div class="card" style="margin-top:14px"><h2>Total por mês no ano (toque para abrir)</h2><div class="bars" id="bars"></div></div>
   <div class="card"><h2>Quem usa o cartão (Resumo e WhatsApp por Vencimento)</h2><div class="wrap"><table id="pessoas"></table></div></div>
   
+  <!-- GASTOS DO MÊS COM PÍLULAS DE EXPANSÃO -->
   <div class="card">
     <h2>Todos os gastos deste mês (Edição e Exclusão)</h2>
-    <div class="row" style="margin-bottom:10px">
-      <div>
-        <label for="filtroGastosCartao">Filtrar por Cartão / Tipo</label>
-        <select id="filtroGastosCartao" onchange="dash()">
-          <option value="">Selecione um filtro...</option>
-          <option value="Nubank">Nubank</option>
-          <option value="Itaú">Itaú</option>
-          <option value="Santander">Santander</option>
-          <option value="fixa">Despesa Fixa</option>
-          <option value="pessoal">Variável / Pessoal</option>
-        </select>
-      </div>
-      <div>
-        <label for="filtroGastosPessoa">Filtrar por Pessoa</label>
-        <select id="filtroGastosPessoa" onchange="dash()">
-          <option value="">Selecione uma pessoa...</option>
-          <option value="Gustavo">Gustavo</option>
-          <option value="Iris">Iris</option>
-          <option value="Andreia">Andreia</option>
-          <option value="Matheus">Matheus</option>
-        </select>
-      </div>
+    <div class="filter-pills" id="pillsGastos">
+      <button class="pill" onclick="filtrarGastos('todos', this)">Todos</button>
+      <button class="pill" onclick="filtrarGastos('Nubank', this)">Nubank</button>
+      <button class="pill" onclick="filtrarGastos('Itaú', this)">Itaú</button>
+      <button class="pill" onclick="filtrarGastos('Santander', this)">Santander</button>
+      <button class="pill" onclick="filtrarGastos('fixa', this)">Fixas</button>
+      <button class="pill" onclick="filtrarGastos('pessoal', this)">Variáveis</button>
     </div>
-    <div class="wrap"><table id="gastosMes"></table></div>
+    <div id="wrapGastos" class="wrap hide" style="margin-top:10px;"><table id="gastosMes"></table></div>
   </div>
 
+  <!-- PARCELAS ATIVAS COM PÍLULAS DE EXPANSÃO -->
   <div class="card">
     <h2>Parcelas ativas neste mês</h2>
-    <div class="row" style="margin-bottom:10px">
-      <div>
-        <label for="filtroParcCartao">Filtrar por Cartão</label>
-        <select id="filtroParcCartao" onchange="dash()">
-          <option value="">Selecione um cartão...</option>
-          <option value="Nubank">Nubank</option>
-          <option value="Itaú">Itaú</option>
-          <option value="Santander">Santander</option>
-        </select>
-      </div>
-      <div>
-        <label for="filtroParcPessoa">Filtrar por Pessoa</label>
-        <select id="filtroParcPessoa" onchange="dash()">
-          <option value="">Selecione uma pessoa...</option>
-          <option value="Gustavo">Gustavo</option>
-          <option value="Iris">Iris</option>
-          <option value="Andreia">Andreia</option>
-          <option value="Matheus">Matheus</option>
-        </select>
-      </div>
+    <div class="filter-pills" id="pillsParc">
+      <button class="pill" onclick="filtrarParc('todas', this)">Todas</button>
+      <button class="pill" onclick="filtrarParc('Nubank', this)">Nubank</button>
+      <button class="pill" onclick="filtrarParc('Itaú', this)">Itaú</button>
+      <button class="pill" onclick="filtrarParc('Santander', this)">Santander</button>
     </div>
-    <div class="wrap"><table id="parc"></table></div>
+    <div id="wrapParc" class="wrap hide" style="margin-top:10px;"><table id="parc"></table></div>
+  </div>
+</section>
+
+<!-- TELA: VISÃO PROFISSIONAL -->
+<section id="Pro" class="hide">
+  <div class="card">
+    <h2>📈 Visão Geral & Alertas</h2>
+    <div id="proSummary" style="font-size:14px; color:var(--mut); margin-bottom:14px">A carregar análise de desempenho...</div>
+    <div class="grid" id="proKpis"></div>
+  </div>
+  <div class="card">
+    <h2>📊 Distribuição do Orçamento por Categoria</h2>
+    <div id="proProgressBars" style="display:flex; flex-direction:column; gap:12px; margin-top:8px"></div>
   </div>
 </section>
 
@@ -280,9 +280,11 @@ var db = firebase.database();
 var PES=['Gustavo','Iris','Andreia','Matheus'];
 var MES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 var CARD={Nubank:{c:'#820ad1',d:5,p:'salário'},'Itaú':{c:'#ec7000',d:5,p:'salário'},Santander:{c:'#cc0000',d:20,p:'vale'}};
+var filtroGastoAtual = null;
+var filtroParcAtual = null;
 
 function getDadosPadrao(){
-  return { l: [], h: null, rendimentos: {}, pagos: {}, dividas: [] };
+  return { l: [], h: null, rendimentos: {}, pagos: {}, dividas: [], theme: 'light' };
 }
 
 var S = getDadosPadrao();
@@ -295,7 +297,10 @@ db.ref('sistema_contas').on('value', function(snapshot){
     if(!S.pagos) S.pagos = {};
     if(!S.rendimentos) S.rendimentos = {};
     if(!S.dividas) S.dividas = [];
-    $('syncStatus').textContent = '⚡ Sincronizado com a nuvem';
+    if(!S.theme) S.theme = 'light';
+    
+    document.body.setAttribute('data-theme', S.theme);
+    $('syncStatus').textContent = '⚡ Sincronizado';
     
     if(!S.h) {
       $('lockT').textContent = '🔒 Crie sua senha inicial';
@@ -307,6 +312,9 @@ db.ref('sistema_contas').on('value', function(snapshot){
         carregarRendimentosMes();
         dash();
       }
+      if(!$('Pro').classList.contains('hide')) {
+        atualizarPro();
+      }
     }
   } else {
     salvarNaNuvem();
@@ -315,11 +323,8 @@ db.ref('sistema_contas').on('value', function(snapshot){
 
 function salvarNaNuvem(){
   db.ref('sistema_contas').set(S, function(error){
-    if(error) {
-      $('syncStatus').textContent = '❌ Erro ao sincronizar';
-    } else {
-      $('syncStatus').textContent = '⚡ Sincronizado com a nuvem';
-    }
+    if(error) { $('syncStatus').textContent = '❌ Erro'; } 
+    else { $('syncStatus').textContent = '⚡ Sincronizado'; }
   });
 }
 
@@ -328,6 +333,21 @@ function $(i){return document.getElementById(i)}
 function R(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function idx(ym){var p=ym.split('-');return +p[0]*12+(+p[1]-1)}
+
+function toggleTheme(){
+  S.theme = S.theme === 'light' ? 'dark' : 'light';
+  document.body.setAttribute('data-theme', S.theme);
+  save();
+}
+
+function toggleMostrarSenha(){
+  var inputPw = $('pwGlobal');
+  if(inputPw.type === 'password'){
+    inputPw.type = 'text';
+  } else {
+    inputPw.type = 'password';
+  }
+}
 
 function entrarGlobal(){
   var v = $('pwGlobal').value;
@@ -373,12 +393,6 @@ function getChaveMesAtual(){
   return y + '-' + ('0' + (m + 1)).slice(-2);
 }
 
-function lbl(ym){
-  if(!ym) return '';
-  var p = ym.split('-');
-  return MES[+p[1]-1] + '/' + p[0];
-}
-
 function subtrairMeses(ym, meses) {
   var p = ym.split('-');
   var y = +p[0], m = +p[1] - 1;
@@ -407,6 +421,7 @@ function carregarRendimentosMes(){
 function trocouMesAno(){
   carregarRendimentosMes();
   dash();
+  if(!$('Pro').classList.contains('hide')) atualizarPro();
 }
 
 function togglePago(chaveMes, itemKey) {
@@ -417,18 +432,24 @@ function togglePago(chaveMes, itemKey) {
 }
 
 function go(t){
-  $('L').classList.toggle('hide',t!=='L');
-  $('D').classList.toggle('hide',t!=='D');
-  $('V').classList.toggle('hide',t!=='V');
-  $('tL').classList.toggle('on',t==='L');
-  $('tD').classList.toggle('on',t==='D');
-  $('tV').classList.toggle('on',t==='V');
+  $('L').classList.toggle('hide', t !== 'L');
+  $('D').classList.toggle('hide', t !== 'D');
+  $('Pro').classList.toggle('hide', t !== 'Pro');
+  $('V').classList.toggle('hide', t !== 'V');
 
-  if(t==='D'){
+  $('tL').classList.toggle('on', t === 'L');
+  $('tD').classList.toggle('on', t === 'D');
+  $('tPro').classList.toggle('on', t === 'Pro');
+  $('tV').classList.toggle('on', t === 'V');
+
+  if(t === 'D'){
     initDashSelectors();
     carregarRendimentosMes();
     dash();
-  } else if(t==='V'){ 
+  } else if(t === 'Pro'){
+    initDashSelectors();
+    atualizarPro();
+  } else if(t === 'V'){ 
     listarDividas(); 
   }
 }
@@ -528,6 +549,7 @@ function del(i){
     S.l.splice(i, 1);
     save();
     if(!$('D').classList.contains('hide')) dash();
+    if(!$('Pro').classList.contains('hide')) atualizarPro();
   }
 }
 
@@ -541,6 +563,7 @@ function salvarEdicao(i){
       S.l[i].d = novaDesc;
       S.l[i].v = novoVal;
       save(); dash();
+      if(!$('Pro').classList.contains('hide')) atualizarPro();
       alert('Alteração salva na nuvem com sucesso!');
     } else {
       alert('Preencha uma descrição válida e valor maior que zero.');
@@ -560,6 +583,35 @@ function tag(e){
   return '<span class="tag" style="background:var(--pe)">Variável / Pessoal</span>';
 }
 
+function filtrarGastos(val, btn){
+  if(filtroGastoAtual === val) {
+    filtroGastoAtual = null;
+    var pills = btn.parentNode.getElementsByClassName('pill');
+    for(var p of pills) p.classList.remove('active');
+  } else {
+    filtroGastoAtual = val;
+    var pills = btn.parentNode.getElementsByClassName('pill');
+    for(var p of pills) p.classList.remove('active');
+    btn.classList.add('active');
+  }
+  dash();
+}
+
+function filtrarParc(val, btn){
+  if(filtroParcAtual === val) {
+    filtroParcAtual = null;
+    var pills = btn.parentNode.getElementsByClassName('pill');
+    for(var p of pills) p.classList.remove('active');
+  } else {
+    filtroParcAtual = val;
+    var pills = btn.parentNode.getElementsByClassName('pill');
+    for(var p of pills) p.classList.remove('active');
+    btn.classList.add('active');
+  }
+  dash();
+}
+
+// LOGICA DE DÍVIDAS COM ABATIMENTO
 function addDivida(){
   var credor = $('fCredor').value.trim();
   var desc = $('fDescDivida').value.trim();
@@ -573,14 +625,7 @@ function addDivida(){
   }
 
   if(!S.dividas) S.dividas = [];
-  S.dividas.push({ 
-    id: 'div_' + Date.now(), 
-    credor: credor, 
-    d: desc, 
-    v: val, 
-    pago: 0, 
-    data: hoje() 
-  });
+  S.dividas.push({ id: 'div_' + Date.now(), credor: credor, d: desc, v: val, pago: 0, data: hoje() });
   save();
   $('fMsgDiv').style.color = 'var(--acc)';
   $('fMsgDiv').textContent = 'Dívida salva na nuvem!';
@@ -592,23 +637,15 @@ function addDivida(){
 function abaterDivida(idxDiv){
   var item = S.dividas[idxDiv];
   var saldoRestante = item.v - (item.pago || 0);
-  var valorPagoStr = prompt('Quanto você deseja pagar/abater desta dívida?\n(Saldo devedor atual: ' + R(saldoRestante) + ')', saldoRestante.toFixed(2).replace('.', ','));
-  
+  var valorPagoStr = prompt('Quanto deseja pagar/abater?\n(Saldo atual: ' + R(saldoRestante) + ')', saldoRestante.toFixed(2).replace('.', ','));
   if(valorPagoStr !== null) {
     var valPago = parseFloat(valorPagoStr.replace(',', '.'));
     if(!isNaN(valPago) && valPago > 0) {
       item.pago = (item.pago || 0) + valPago;
-      
       if(item.pago >= item.v) {
-        if(confirm('O valor pago quitou ou ultrapassou o total da dívida. Deseja arquivar/remover este registro?')) {
-          S.dividas.splice(idxDiv, 1);
-        }
+        if(confirm('A dívida foi totalmente paga. Deseja removê-la?')) S.dividas.splice(idxDiv, 1);
       }
-      save();
-      listarDividas();
-      alert('Abatimento registado com sucesso!');
-    } else {
-      alert('Valor inválido.');
+      save(); listarDividas();
     }
   }
 }
@@ -620,6 +657,90 @@ function delDivida(idxDiv){
   }
 }
 
+// BOTÃO WHATSAPP COM OS QUADRADINHOS COLORIDOS UNIVERSAIS 🟪 🟧 🟥 🟩
+function enviarWhatsAppPessoa(pessoa){
+  var y=+$('dA').value, m=+$('dMs').value, i=y*12+m;
+  var nomeMes = MES[m] + '/' + y;
+  
+  var nubankItens = [], itauItens = [], santanderItens = [], diretasItens = [];
+  var nuTot = 0, itTot = 0, saTot = 0, dirTot = 0;
+
+  S.l.forEach(function(e){
+    var a = amt(e, i);
+    if(!a || e.p !== pessoa) return;
+    var k = i - idx(e.m) + 1;
+    var det = (e.n > 1) ? ' (' + k + '/' + e.n + ')' : '';
+    
+    if(e.t === 'cartao') {
+      if(e.c === 'Nubank') { nuTot += a; nubankItens.push('  • ' + e.d + det + ': ' + R(a)); }
+      else if(e.c === 'Itaú') { itTot += a; itauItens.push('  • ' + e.d + det + ': ' + R(a)); }
+      else if(e.c === 'Santander') { saTot += a; santanderItens.push('  • ' + e.d + det + ': ' + R(a)); }
+    } else {
+      dirTot += a;
+      var tipoOri = (e.origem === 'vale') ? ' [Vale]' : ' [Salário]';
+      diretasItens.push('  • ' + e.d + det + tipoOri + ': ' + R(a));
+    }
+  });
+
+  var totalGeral = nuTot + itTot + saTot + dirTot;
+  if(totalGeral === 0){ alert('Nenhum gasto encontrado.'); return; }
+
+  var msg = '💳 *Resumo Financeiro | ' + pessoa + '*\n🗓️ *' + nomeMes + '*\n==================\n';
+  
+  if(nubankItens.length > 0) {
+    msg += '\n🟪 *Nubank (Dia 05)*\n' + nubankItens.join('\n') + '\n  *(Subtotal: ' + R(nuTot) + ')*\n';
+  }
+  if(itauItens.length > 0) {
+    msg += '\n🟧 *Itaú (Dia 05)*\n' + itauItens.join('\n') + '\n  *(Subtotal: ' + R(itTot) + ')*\n';
+  }
+  if(santanderItens.length > 0) {
+    msg += '\n🟥 *Santander (Dia 20)*\n' + santanderItens.join('\n') + '\n  *(Subtotal: ' + R(saTot) + ')*\n';
+  }
+  if(diretasItens.length > 0) {
+    msg += '\n🟩 *Despesas Diretas (Vale/Salário)*\n' + diretasItens.join('\n') + '\n  *(Subtotal: ' + R(dirTot) + ')*\n';
+  }
+
+  msg += '\n==================\n🎯 *Valor Total a Pagar: ' + R(totalGeral) + '*';
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function listarDividas(){
+  if(!S.dividas) S.dividas = [];
+  var totais = {}, totalGeralDevido = 0;
+  S.dividas.forEach(function(item){
+    var saldo = item.v - (item.pago || 0);
+    totais[item.credor] = (totais[item.credor] || 0) + saldo;
+    totalGeralDevido += saldo;
+  });
+  var thTot = '<tr><th>Credor</th><th>Total Restante</th><th style="text-align:center">Ação</th></tr>';
+  var credores = Object.keys(totais);
+  if(credores.length === 0){
+    thTot += '<tr><td colspan="3" style="text-align:center;color:var(--mut)">Nenhuma dívida cadastrada.</td></tr>';
+  } else {
+    credores.forEach(function(nomeCredor){
+      thTot += '<tr><td><b>' + esc(nomeCredor) + '</b></td><td><b>' + R(totais[nomeCredor]) + '</b></td><td style="text-align:center"><button class="wpp" onclick="enviarWhatsAppDividas(\''+esc(nomeCredor)+'\')">WhatsApp</button></td></tr>';
+    });
+    thTot += '<tr><th>TOTAL GERAL</th><th>' + R(totalGeralDevido) + '</th><th></th></tr>';
+  }
+  $('tabelaTotaisDividas').innerHTML = thTot;
+
+  var h = '<tr><th>Ações</th><th>Credor</th><th>Descrição</th><th>Total</th><th>Pago</th><th>Resta</th></tr>';
+  if(S.dividas.length === 0){
+    h += '<tr><td colspan="6" style="text-align:center;color:var(--mut)">Nenhum registro.</td></tr>';
+  } else {
+    S.dividas.forEach(function(item, i){
+      var pago = item.pago || 0;
+      var saldo = item.v - pago;
+      h += '<tr>' +
+           '<td style="white-space:nowrap"><button class="b" style="padding:4px 8px;font-size:11px;width:auto;" onclick="abaterDivida('+i+')">Abater</button> <button class="x" onclick="delDivida('+i+')">Quitar</button></td>' +
+           '<td><b>' + esc(item.credor) + '</b></td><td>' + esc(item.d) + '</td><td>' + R(item.v) + '</td>' +
+           '<td style="color:var(--acc)">' + R(pago) + '</td><td><b>' + R(saldo) + '</b></td>' +
+           '</tr>';
+    });
+  }
+  $('tabelaDividas').innerHTML = h;
+}
+
 function enviarWhatsAppDividas(credorTarget){
   var dividasCredor = S.dividas.filter(function(item){ return item.credor === credorTarget; });
   if(dividasCredor.length === 0) return;
@@ -628,87 +749,9 @@ function enviarWhatsAppDividas(credorTarget){
   dividasCredor.forEach(function(item){ 
     var saldo = item.v - (item.pago || 0);
     totalRestante += saldo;
-    msg += '  • ' + item.d + ': Resta ' + R(saldo) + ' (Total: ' + R(item.v) + ')\n'; 
+    msg += '  • ' + item.d + ': Resta ' + R(saldo) + '\n'; 
   });
-  msg += '-------------------------------------\n*💰 TOTAL RESTANTE QUE TE DEVO: ' + R(totalRestante) + '*';
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-}
-
-function listarDividas(){
-  if(!S.dividas) S.dividas = [];
-  var totais = {}, totalGeralDevido = 0;
-  
-  S.dividas.forEach(function(item){
-    var saldo = item.v - (item.pago || 0);
-    totais[item.credor] = (totais[item.credor] || 0) + saldo;
-    totalGeralDevido += saldo;
-  });
-
-  var thTot = '<tr><th>Pessoa / Credor</th><th>Total Restante Devido</th><th style="text-align:center">Ação</th></tr>';
-  var credores = Object.keys(totais);
-  if(credores.length === 0){
-    thTot += '<tr><td colspan="3" style="text-align:center;color:var(--mut)">Nenhuma dívida cadastrada. Você está livre de dívidas!</td></tr>';
-  } else {
-    credores.forEach(function(nomeCredor){
-      thTot += '<tr><td><b>' + esc(nomeCredor) + '</b></td><td><b>' + R(totais[nomeCredor]) + '</b></td><td style="text-align:center"><button class="wpp" onclick="enviarWhatsAppDividas(\''+esc(nomeCredor)+'\')">Enviar por WhatsApp</button></td></tr>';
-    });
-    thTot += '<tr><th>TOTAL GERAL RESTANTE</th><th>' + R(totalGeralDevido) + '</th><th></th></tr>';
-  }
-  $('tabelaTotaisDividas').innerHTML = thTot;
-
-  var h = '<tr><th>Ações</th><th>Credor</th><th>Descrição</th><th>Valor Total</th><th>Já Pago</th><th>Resta Pagar</th></tr>';
-  if(S.dividas.length === 0){
-    h += '<tr><td colspan="6" style="text-align:center;color:var(--mut)">Nenhum registro.</td></tr>';
-  } else {
-    S.dividas.forEach(function(item, i){
-      var pago = item.pago || 0;
-      var saldo = item.v - pago;
-      h += '<tr>' +
-           '<td style="white-space:nowrap">' +
-             '<button class="b" style="padding:4px 8px;font-size:11px;margin-right:4px;width:auto;" onclick="abaterDivida('+i+')">Abater</button>' +
-             '<button class="x" onclick="delDivida('+i+')">Quitar</button>' +
-           '</td>' +
-           '<td><b>' + esc(item.credor) + '</b></td>' +
-           '<td>' + esc(item.d) + '</td>' +
-           '<td>' + R(item.v) + '</td>' +
-           '<td style="color:var(--acc)">' + R(pago) + '</td>' +
-           '<td><b>' + R(saldo) + '</b></td>' +
-           '</tr>';
-    });
-  }
-  $('tabelaDividas').innerHTML = h;
-}
-
-function enviarWhatsAppPessoa(pessoa){
-  var y=+$('dA').value, m=+$('dMs').value, i=y*12+m;
-  var nomeMes = MES[m] + '/' + y;
-  var itens05 = [], itens20 = [], itensOutros = [];
-  var tot05 = 0, tot20 = 0, totOutros = 0;
-
-  S.l.forEach(function(e){
-    var a = amt(e, i);
-    if(!a) return;
-    var resp = e.p;
-    if(resp === pessoa) {
-      var k = i - idx(e.m) + 1;
-      var detalheParc = (e.n > 1) ? ' (' + k + '/' + e.n + ')' : '';
-      if(e.t === 'cartao') {
-        if(e.c === 'Santander') { tot20 += a; itens20.push('  • ' + e.d + detalheParc + ': ' + R(a)); } 
-        else { tot05 += a; itens05.push('  • ' + e.d + detalheParc + ' [' + e.c + ']: ' + R(a)); }
-      } else {
-        if(e.origem === 'vale') { tot20 += a; itens20.push('  • ' + e.d + detalheParc + ' [Vale]: ' + R(a)); }
-        else { tot05 += a; itens05.push('  • ' + e.d + detalheParc + ' [Salário]: ' + R(a)); }
-      }
-    }
-  });
-
-  var totalGeral = tot05 + tot20 + totOutros;
-  if(totalGeral === 0){ alert('Nenhum gasto encontrado para ' + pessoa + ' no mês de ' + nomeMes + '.'); return; }
-
-  var msg = '*Resumo de Gastos - ' + pessoa + '*\n*Mês:* ' + nomeMes + '\n-------------------------------------\n';
-  if(itens05.length > 0) { msg += '\n*📅 VENCIMENTO DIA 05 (Salário / Cartões)*\n' + itens05.join('\n') + '\n*Subtotal Dia 05: ' + R(tot05) + '*\n'; }
-  if(itens20.length > 0) { msg += '\n*📅 VENCIMENTO DIA 20 (Vale / Santander)*\n' + itens20.join('\n') + '\n*Subtotal Dia 20: ' + R(tot20) + '*\n'; }
-  msg += '\n-------------------------------------\n*💰 TOTAL GERAL DO MÊS: ' + R(totalGeral) + '*';
+  msg += '-------------------------------------\n*💰 TOTAL RESTANTE: ' + R(totalRestante) + '*';
   window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 }
 
@@ -753,7 +796,11 @@ function dash(){
   var faltaPagar = totalGastoMes - jaPago;
   var mm=('0'+(m+1)).slice(-2);
 
-  function k(c,t,v,s){return'<div class="kpi" style="--c:'+c+'"><small>'+t+'</small><b>'+R(v)+'</b>'+(s?'<small>'+s+'</small>':'')+'</div>'}
+  function k(c,t,v,s, isAlertNeg){
+    var corCard = c;
+    if(isAlertNeg && v < 0) corCard = 'var(--sa)';
+    return '<div class="kpi" style="--c:'+corCard+'"><small>'+t+'</small><b>'+R(v)+'</b>'+(s?'<small>'+s+'</small>':'')+'</div>';
+  }
   
   $('kpis').innerHTML=
     k(CARD.Nubank.c,'Nubank',tot.Nubank,'vence 05/'+mm)+
@@ -761,26 +808,24 @@ function dash(){
     k(CARD.Santander.c,'Santander',tot.Santander,'vence 20/'+mm)+
     k('var(--fixa)','Despesas Fixas',tot.fixa)+
     k('var(--pe)','Despesas Pessoais',tot.pessoal)+
-    k('var(--acc)','Sai do Salário (05)',salGasto,'Apenas gastos do Gustavo')+
-    k('#8a6d00','Sai do Vale (20)',valeGasto,'Apenas gastos do Gustavo')+
-    k(restaSal>=0?'#0f6b5c':'#cc0000','Resta Salário',restaSal,salInformado>0?'Salário: '+R(salInformado):'Informe o Salário acima')+
-    k(restaVale>=0?'#0f6b5c':'#cc0000','Resta Vale',restaVale,valeInformado>0?'Vale: '+R(valeInformado):'Informe o Vale acima')+
-    k('#2f5d8a','Já Paguei',jaPago,'Calculado pelo Checklist')+
-    k(faltaPagar>=0?'#cc0000':'#0f6b5c','Falta Pagar',faltaPagar,'Total do mês - Já paguei');
+    k('var(--acc)','Sai do Salário',salGasto)+
+    k('#8a6d00','Sai do Vale',valeGasto)+
+    k('#0f6b5c','Resta Salário',restaSal,salInformado>0?'Salário: '+R(salInformado):'Informe Salário', true)+
+    k('#0f6b5c','Resta Vale',restaVale,valeInformado>0?'Vale: '+R(valeInformado):'Informe Vale', true)+
+    k('#2f5d8a','Já Paguei',jaPago)+
+    k(faltaPagar>0?'var(--sa)':'#0f6b5c','Falta Pagar',faltaPagar,'Total - Pago', true);
 
-  var chkHtml = '<tr><th style="width:50px">Pago?</th><th>Item / Categoria</th><th>Tipo / Detalhe</th><th style="text-align:right">Valor</th></tr>';
+  var chkHtml = '<tr><th style="width:50px">Pago?</th><th>Item / Categoria</th><th>Detalhe</th><th style="text-align:right">Valor</th></tr>';
   var qtdItens = 0;
-
   Object.keys(CARD).forEach(function(cartaoNome){
     var valCartao = tot[cartaoNome];
     if(valCartao > 0) {
       qtdItens++;
       var keyChk = 'cartao_' + cartaoNome;
       var checked = mesPagos[keyChk] ? 'checked' : '';
-      chkHtml += '<tr><td><input type="checkbox" '+checked+' onclick="togglePago(\''+chaveMes+'\', \''+keyChk+'\')" style="width:20px;height:20px;cursor:pointer"></td><td><b>Cartão ' + cartaoNome + ' (Total)</b></td><td><span class="tag" style="background:'+CARD[cartaoNome].c+'">Cartão</span></td><td style="text-align:right"><b>' + R(valCartao) + '</b></td></tr>';
+      chkHtml += '<tr><td><input type="checkbox" '+checked+' onclick="togglePago(\''+chaveMes+'\', \''+keyChk+'\')" style="width:20px;height:20px;cursor:pointer"></td><td><b>Cartão ' + cartaoNome + '</b></td><td><span class="tag" style="background:'+CARD[cartaoNome].c+'">Cartão</span></td><td style="text-align:right"><b>' + R(valCartao) + '</b></td></tr>';
     }
   });
-
   gastosDoMes.forEach(function(item){
     if(item.e.t !== 'cartao') {
       qtdItens++;
@@ -789,7 +834,7 @@ function dash(){
       chkHtml += '<tr><td><input type="checkbox" '+checked+' onclick="togglePago(\''+chaveMes+'\', \''+keyChk+'\')" style="width:20px;height:20px;cursor:pointer"></td><td>' + esc(item.e.d) + ' (' + item.e.p + ')</td><td>' + tag(item.e) + '</td><td style="text-align:right">' + R(item.val) + '</td></tr>';
     }
   });
-  if(!qtdItens) chkHtml += '<tr><td colspan="4" style="text-align:center;color:var(--mut)">Nenhum cartão ou despesa cadastrada neste mês.</td></tr>';
+  if(!qtdItens) chkHtml += '<tr><td colspan="4" style="text-align:center;color:var(--mut)">Nenhum item cadastrado neste mês.</td></tr>';
   $('checklistPagos').innerHTML = chkHtml;
 
   var mx=1,vals=[];
@@ -797,90 +842,88 @@ function dash(){
   $('bars').innerHTML=vals.map(function(s,j){
     return'<div class="bar'+(j===m?' sel':'')+'" onclick="$(\'dMs\').value='+j+';trocouMesAno()" title="'+MES[j]+': '+R(s)+'"><i style="height:'+Math.round(s/mx*100)+'%"></i>'+MES[j].slice(0,3)+'</div>'}).join('');
 
-  var P={};PES.forEach(function(p){P[p]={Nubank:0, Itaú:0, Santander:0, Fixas:0, totMes:0, par:0, rest:0, ano:0}});
+  var P={};PES.forEach(function(p){P[p]={Nubank:0, Itaú:0, Santander:0, totMes:0, rest:0}});
   S.l.forEach(function(e){
     var resp = e.p;
     if(!P[resp]) return;
     var a=amt(e,i);
     P[resp].totMes += a;
-    if(a > 0){
-      if(e.t === 'cartao'){ P[resp][e.c] = (P[resp][e.c] || 0) + a; } 
-      else { P[resp].Fixas = (P[resp].Fixas || 0) + a; }
-    }
+    if(a > 0 && e.t === 'cartao') P[resp][e.c] = (P[resp][e.c] || 0) + a;
     if(e.n>1){
-      if(a > 0) P[resp].par+=a;
       var inicioIdx = idx(e.m);
       for(var j=0; j<e.n; j++) { if((inicioIdx + j) >= i) P[resp].rest += e.v; }
     }
-    for(var j=0;j<12;j++)P[resp].ano+=amt(e,y*12+j);
   });
 
-  var h='<tr><th>Pessoa</th><th>Nubank (05)</th><th>Itaú (05)</th><th>Santander (20)</th><th>Total no mês</th><th>Falta pagar em parcelas</th><th style="text-align:center">Enviar WhatsApp</th></tr>';
-  var T={Nubank:0, Itaú:0, Santander:0, totMes:0, rest:0};
+  var h='<tr><th>Pessoa</th><th>Nubank</th><th>Itaú</th><th>Santander</th><th>Total Mês</th><th>Parcelas Restantes</th><th style="text-align:center">WhatsApp</th></tr>';
   PES.forEach(function(p){
     var o=P[p];
-    h+='<tr><td><b>'+p+'</b></td><td>'+R(o.Nubank)+'</td><td>'+R(o.Itaú)+'</td><td>'+R(o.Santander)+'</td><td><b>'+R(o.totMes)+'</b></td><td>'+R(o.rest)+'</td><td style="text-align:center"><button class="wpp" onclick="enviarWhatsAppPessoa(\''+p+'\')">Enviar WhatsApp</button></td></tr>';
-    T.Nubank += o.Nubank; T.Itaú += o.Itaú; T.Santander += o.Santander; T.totMes += o.totMes; T.rest += o.rest;
+    h+='<tr><td><b>'+p+'</b></td><td>'+R(o.Nubank)+'</td><td>'+R(o.Itaú)+'</td><td>'+R(o.Santander)+'</td><td><b>'+R(o.totMes)+'</b></td><td>'+R(o.rest)+'</td><td style="text-align:center"><button class="wpp" onclick="enviarWhatsAppPessoa(\''+p+'\')">Enviar</button></td></tr>';
   });
-  h+='<tr><th>Total</th><th>'+R(T.Nubank)+'</th><th>'+R(T.Itaú)+'</th><th>'+R(T.Santander)+'</th><th>'+R(T.totMes)+'</th><th>'+R(T.rest)+'</th><th></th></tr>';
   $('pessoas').innerHTML=h;
 
-  var fCartao = $('filtroGastosCartao').value;
-  var fPessoa = $('filtroGastosPessoa').value;
-  var gh='';
-
-  if(!fCartao && !fPessoa) {
-    gh = '<tr><td colspan="5" style="text-align:center;color:var(--mut)">Selecione um filtro acima para exibir os gastos.</td></tr>';
+  if(filtroGastoAtual === null) {
+    $('wrapGastos').classList.add('hide');
   } else {
-    var gc=0;
+    $('wrapGastos').classList.remove('hide');
+    var gh=''; var gc=0;
     gastosDoMes.forEach(function(item){
       var e = item.e;
-      var respGasto = e.p;
       var cartaoOuTipo = (e.t === 'cartao') ? e.c : e.t;
-
-      if(fCartao && cartaoOuTipo !== fCartao) return;
-      if(fPessoa && respGasto !== fPessoa) return;
+      if(filtroGastoAtual !== 'todos' && cartaoOuTipo !== filtroGastoAtual) return;
       gc++;
-
       var idxOrig = item.idx;
-      gh+='<tr>' +
-          '<td><input id="ed_d_'+idxOrig+'" value="'+esc(e.d)+'" style="padding:4px;font-size:13px"></td>' +
-          '<td>'+tag(e)+'</td>' +
-          '<td>'+respGasto+'</td>' +
-          '<td><input id="ed_v_'+idxOrig+'" type="number" step="0.01" value="'+e.v+'" style="width:110px;padding:4px;font-size:13px"></td>' +
-          '<td style="white-space:nowrap">' +
-            '<button class="b" style="padding:4px 8px;font-size:12px;margin-right:4px;width:auto;" onclick="salvarEdicao('+idxOrig+')">Salvar</button>' +
-            '<button class="x" onclick="del('+idxOrig+')">Apagar</button>' +
-          '</td>' +
-          '</tr>';
+      var valFormatado = Number(e.v).toFixed(2).replace('.', ',');
+      gh+='<tr><td><input id="ed_d_'+idxOrig+'" value="'+esc(e.d)+'" style="padding:4px"></td><td>'+tag(e)+'</td><td>'+e.p+'</td><td><input id="ed_v_'+idxOrig+'" type="text" value="'+valFormatado+'" style="width:100px;padding:4px"></td><td style="white-space:nowrap"><button class="b" style="padding:4px 8px;font-size:12px;width:auto" onclick="salvarEdicao('+idxOrig+')">Salvar</button> <button class="x" onclick="del('+idxOrig+')">Apagar</button></td></tr>';
     });
-    if(!gc) gh='<tr><td colspan="5" style="text-align:center;color:var(--mut)">Nenhum gasto correspondente aos filtros.</td></tr>';
+    if(!gc) gh='<tr><td colspan="5" style="text-align:center;color:var(--mut)">Nenhum gasto encontrado.</td></tr>';
+    $('gastosMes').innerHTML = gh;
   }
-  $('gastosMes').innerHTML = gh;
 
-  var fParcCartao = $('filtroParcCartao').value;
-  var fParcPessoa = $('filtroParcPessoa').value;
-  var ph='';
-
-  if(!fParcCartao && !fParcPessoa) {
-    ph = '<tr><td colspan="7" style="text-align:center;color:var(--mut)">Selecione um filtro acima para exibir as parcelas.</td></tr>';
+  if(filtroParcAtual === null) {
+    $('wrapParc').classList.add('hide');
   } else {
-    var c=0;
+    $('wrapParc').classList.remove('hide');
+    var ph=''; var c=0;
     S.l.forEach(function(e, idxOrig){
       if(e.n < 2 || !amt(e,i)) return;
-      var respParc = e.p;
-
-      if(fParcCartao && e.c !== fParcCartao) return;
-      if(fParcPessoa && respParc !== fParcPessoa) return;
+      if(filtroParcAtual !== 'todas' && e.c !== filtroParcAtual) return;
       c++;
-
       var k = i - idx(e.m) + 1;
       var faltam = e.n - k;
-      ph+='<tr><td><button class="x" onclick="del('+idxOrig+')" aria-label="Apagar lançamento">Apagar</button></td><td>'+esc(e.d)+'</td><td>'+tag(e)+'</td><td>'+respParc+'</td><td>'+k+'/'+e.n+'</td><td>'+R(e.v)+'</td><td>'+faltam+' ('+R(faltam*e.v)+')</td></tr>';
+      ph+='<tr><td><button class="x" onclick="del('+idxOrig+')">Apagar</button></td><td>'+esc(e.d)+'</td><td>'+tag(e)+'</td><td>'+e.p+'</td><td>'+k+'/'+e.n+'</td><td>'+R(e.v)+'</td><td>'+faltam+' ('+R(faltam*e.v)+')</td></tr>';
     });
-    if(!c) ph='<tr><td colspan="7" style="text-align:center;color:var(--mut)">Nenhuma parcela correspondente aos filtros.</td></tr>';
+    if(!c) ph='<tr><td colspan="7" style="text-align:center;color:var(--mut)">Nenhuma parcela ativa.</td></tr>';
+    $('parc').innerHTML = ph;
   }
-  $('parc').innerHTML = ph;
+}
+
+function atualizarPro(){
+  initDashSelectors();
+  var y = +$('dA').value, m = +$('dMs').value, i = y*12 + m;
+  var totalMes = 0, catTotais = { Nubank: 0, 'Itaú': 0, Santander: 0, Fixas: 0, Variáveis: 0 };
+
+  S.l.forEach(function(e){
+    var a = amt(e, i);
+    if(!a) return;
+    totalMes += a;
+    if(e.t === 'cartao') catTotais[e.c] = (catTotais[e.c] || 0) + a;
+    else if(e.t === 'fixa') catTotais.Fixas += a;
+    else catTotais.Variáveis += a;
+  });
+
+  $('proSummary').innerHTML = 'Resumo gerencial consolidado do mês de <b>' + MES[m] + '/' + y + '</b>. Total movimentado: <b>' + R(totalMes) + '</b>.';
+  
+  function kPro(c,t,v){return '<div class="kpi" style="--c:'+c+'"><small>'+t+'</small><b>'+R(v)+'</b></div>'}
+  $('proKpis').innerHTML = kPro('#0f6b5c','Total Geral',totalMes) + kPro('#820ad1','Fixas & Variáveis',catTotais.Fixas + catTotais.Variáveis) + kPro('#ec7000','Total Cartões',catTotais.Nubank + catTotais['Itaú'] + catTotais.Santander);
+
+  var progHtml = '';
+  Object.keys(catTotais).forEach(function(cat){
+    var val = catTotais[cat];
+    var pct = totalMes > 0 ? Math.round((val / totalMes) * 100) : 0;
+    progHtml += '<div><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>'+cat+'</span><span>'+R(val)+' ('+pct+'%)</span></div><div class="prog-container"><div class="prog-fill" style="width:'+pct+'%"></div></div></div>';
+  });
+  $('proProgressBars').innerHTML = progHtml;
 }
 
 $('fM1').value = hoje().slice(0,7);
